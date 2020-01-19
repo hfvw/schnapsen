@@ -16,11 +16,12 @@ combination. We plot the results in a heat map
 
 """
 import matplotlib as mpl
-mpl.use('Agg')
 from matplotlib import pyplot as plt
 from api import State, util
-
 import random
+
+mpl.use('Agg')
+
 
 # Define the bot:
 # (we're not using it with the command line tools, so we can just put it here)
@@ -28,18 +29,24 @@ class Bot:
 
     # Probability of moving with non-trump cards
     __non_trump_move = 0.0
+
     def __init__(self, non_trump_move=0.0):
         self.__non_trump_move = non_trump_move
 
     def get_move(self, state):
 
         if random.random() < self.__non_trump_move:
-
             # IMPLEMENT: Make the best non-trump move you can. Use the best_non_trump_card method written below.
-            pass
+            return best_non_trump_card(state)
 
-        #IMPLEMENT: Make a random move (but exclude the best non-trump move from above)
-        pass
+        # IMPLEMENT: Make a random move (but exclude the best non-trump move from above)
+        moves = state.moves()
+        chosen_move = best_non_trump_card(state)
+
+        moves.remove(chosen_move)
+        if len(moves) > 0:
+            return random.choice(moves)
+        return chosen_move
 
 
 def empty(n):
@@ -48,6 +55,7 @@ def empty(n):
     :return: n by n matrix (2D array) filled with 0s
     """
     return [[0 for i in range(n)] for j in range(n)]
+
 
 def best_non_trump_card(state):
     """
@@ -61,7 +69,7 @@ def best_non_trump_card(state):
 
     lowest_suit_moves = []
 
-    #Get all moves which are not trump suit or matching the suit of the enemy's card
+    # Get all moves which are not trump suit or matching the suit of the enemy's card
     for move in moves:
 
         if move[0] is not None and util.get_suit(move[0]) != state.get_trump_suit():
@@ -76,6 +84,7 @@ def best_non_trump_card(state):
             chosen_move = move
 
     return chosen_move
+
 
 # For experiments, it's good to have repeatability, so we set the seed of the random number generator to a known value.
 # That way, if something interesting happens, we can always rerun the exact same experiment
@@ -113,7 +122,7 @@ for i in range(STEPS):
                 player = player1 if state.whose_turn() == 1 else player2
                 state = state.next(player.get_move(state))
 
-            #TODO Maybe add points for state.winner()
+            # TODO Maybe add points for state.winner()
             if state.finished():
                 winner, points = state.winner()
                 if winner == 1:
@@ -122,7 +131,6 @@ for i in range(STEPS):
                     won_by_2[i][j] += points
 
         print('finished {} vs {}'.format(inc * i, inc * j))
-
 
 
 # This

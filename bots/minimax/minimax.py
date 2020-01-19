@@ -27,7 +27,7 @@ class Bot:
 
         return move
 
-    def value(self, state, depth = 0):
+    def value(self, state, depth=0):
         # type: (State, int) -> tuple[float, tuple[int, int]]
         """
         Return the value of this state and the associated move
@@ -57,7 +57,7 @@ class Bot:
 
             # IMPLEMENT: Add a recursive function call so that 'value' will contain the
             # minimax value of 'next_state'
-            value ???
+            value, _ = self.value(next_state, depth + 1)
 
             if maximizing(state):
                 if value > best_value:
@@ -70,6 +70,7 @@ class Bot:
 
         return best_value, best_move
 
+
 def maximizing(state):
     # type: (State) -> bool
     """
@@ -79,6 +80,7 @@ def maximizing(state):
     :return:
     """
     return state.whose_turn() == 1
+
 
 def heuristic(state):
     # type: (State) -> float

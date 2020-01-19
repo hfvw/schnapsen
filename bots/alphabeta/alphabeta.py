@@ -7,6 +7,7 @@
 from api import State, util
 import random
 
+
 class Bot:
 
     __max_depth = -1
@@ -21,7 +22,7 @@ class Bot:
 
         return move
 
-    def value(self, state, alpha=float('-inf'), beta=float('inf'), depth = 0):
+    def value(self, state, alpha=float('-inf'), beta=float('inf'), depth=0):
         """
         Return the value of this state and the associated move
         :param State state:
@@ -49,7 +50,7 @@ class Bot:
         for move in moves:
 
             next_state = state.next(move)
-            value, _ = ???
+            value, _ = self.value(next_state, alpha, beta, depth + 1)
 
             if maximizing(state):
                 if value > best_value:
@@ -64,10 +65,11 @@ class Bot:
 
             # Prune the search tree
             # We know this state will never be chosen, so we stop evaluating its children
-            if ???:
+            if alpha >= beta:
                 break
 
         return best_value, best_move
+
 
 def maximizing(state):
     # type: (State) -> bool
@@ -78,6 +80,7 @@ def maximizing(state):
     :return:
     """
     return state.whose_turn() == 1
+
 
 def heuristic(state):
     # type: (State) -> float

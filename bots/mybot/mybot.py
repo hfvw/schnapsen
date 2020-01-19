@@ -1,10 +1,9 @@
 """
-RandomBot -- A simple strategy: enumerates all legal moves, and picks one
-uniformly at random.
+Mybot - Always play the highest ranked card and follow suit.
 """
 
 # Import the API objects
-from api import State
+from api import State, util
 from api import Deck
 
 
@@ -30,21 +29,11 @@ class Bot:
 		moves = state.moves()
 		chosen_move = moves[0]
 
-		moves_trump_suit = []
-
-		# Get all trump suit moves available
-		for index, move in enumerate(moves):
-
-			if move[0] is not None and Deck.get_suit(move[0]) == state.get_trump_suit():
-				moves_trump_suit.append(move)
-
-		if len(moves_trump_suit) > 0:
-			chosen_move = moves_trump_suit[0]
-			return chosen_move
+		if state.get_phase() == 2:
+			chosen_move = moves[len(moves) - 1]
 
 		# If the opponent has played a card
 		if state.get_opponents_played_card() is not None:
-
 			moves_same_suit = []
 
 			# Get all moves of the same suit as the opponent's played card
@@ -52,13 +41,11 @@ class Bot:
 				if move[0] is not None and Deck.get_suit(move[0]) == Deck.get_suit(state.get_opponents_played_card()):
 					moves_same_suit.append(move)
 
+			# Play the cheapest card in phase two if you cant beat the trick, else play the highest card
 			if len(moves_same_suit) > 0:
+				if state.get_phase() == 2 and (state.get_opponents_played_card() % 5 < moves_same_suit[0][0]):
+					return moves_same_suit[len(moves_same_suit) - 1]
 				chosen_move = moves_same_suit[0]
 				return chosen_move
-
-		# Get move with highest rank available, of any suit
-		for index, move in enumerate(moves):
-			if move[0] is not None and move[0] % 5 <= chosen_move[0] % 5:
-				chosen_move = move
 
 		return chosen_move
