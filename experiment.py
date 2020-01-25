@@ -41,13 +41,11 @@ class Bot:
 
         # IMPLEMENT: Make a random move (but exclude the best non-trump move from above)
         moves = state.moves()
-        chosen_move = best_non_trump_card(state)
+        moves.remove(best_non_trump_card(state))
 
-        moves.remove(chosen_move)
-        if len(moves) > 0:
+        if len(moves) != 0:
             return random.choice(moves)
-        return chosen_move
-
+        return best_non_trump_card(state)
 
 def empty(n):
     """
